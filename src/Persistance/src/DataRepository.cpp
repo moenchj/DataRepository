@@ -1,5 +1,5 @@
 #include "DataRepository.h"
-#include "DemoDAL.h"
+#include "SQLiteDAL.h"
 
 using namespace std;
 
@@ -10,10 +10,25 @@ DataRepository DataRepository::instance()
 {
     if(!_instance)
     {
-        _dal = make_unique<DemoDAL>();
+        _dal = make_unique<SQLiteDAL>("Database.sqlite");
         _instance = make_unique<DataRepository>(DataRepository(*_dal));
     }
     return *_instance;
+}
+
+DataRepository DataRepository::instance(DAL& dal)
+{
+    if(!_instance)
+    {
+        _instance = make_unique<DataRepository>(DataRepository(dal));
+    }
+    return *_instance;
+}
+
+void DataRepository::dispose()
+{
+    _dal.release();
+    _instance.release();
 }
 
 DataRepository::DataRepository(DAL& dal) :

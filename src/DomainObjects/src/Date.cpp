@@ -1,5 +1,13 @@
 #include "Date.h"
 
+Date::Date()
+: Date(0, 0, 0)
+{}
+
+Date::Date(int day, int month, int year)
+: _day(day), _month(month), _year(year)
+{}
+
 unsigned int Date::day() const
 {
     return _day;

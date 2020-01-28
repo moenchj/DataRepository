@@ -5,7 +5,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "PersistanceService.h"
 #include "ResultSet.h"
 
 using namespace std;
@@ -14,7 +13,7 @@ using namespace testing;
 class PersistanceServiceMock : public PersistanceService<string>
 {
     public:
-        MOCK_METHOD(bool, save, (string&));
+        MOCK_METHOD(long long, save, (string&));
         MOCK_METHOD((list<string>), executeQuery, (const string& query, unsigned int, unsigned int));
 };
 
@@ -88,10 +87,4 @@ TEST(ResultSetTest, TwoFullPages)
         numResults++;
     }
     ASSERT_EQ(numResults, 4);
-}
-
-int main(int argc, char** argv)
-{
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
 }

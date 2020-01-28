@@ -15,5 +15,8 @@ class DataRepository
 
     public:
         static DataRepository instance();
+        static DataRepository instance(DAL& dal);
+        static void dispose();
+        
         UserRepo Users();
 };

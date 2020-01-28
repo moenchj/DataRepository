@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug ResultSetTest",
+            "name": "Debug DataRepositoryTests",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/bin/ResultSetTest",
+            "program": "${workspaceFolder}/bin/DataRepositoryTests",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -16,8 +16,9 @@
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
-                { "text": "-enable-pretty-printing", "description": "enable pretty printing", "ignoreFailures": true },
-                { "text": "handle SIGPIPE nostop noprint pass", "description": "ignore SIGPIPE", "ignoreFailures": true }  
+                { "text": "-enable-pretty-printing", "description": "enable pretty printing" },
+                { "text": "handle SIGPIPE nostop noprint pass", "description": "ignore SIGPIPE" },
+                { "text": "catch throw", "description": "Stop on exceptions" }
             ],
             "preLaunchTask": "Build",
             "miDebuggerPath": "/usr/bin/gdb"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <array>
+#include <vector>
 #include <map>
 #include <algorithm>
 #include <string>
@@ -25,11 +25,10 @@ class ResultSet
         using iterator          = ResultSetIterator;
 
     private:
-        using PageData = std::array<T, PageSize>;
+        using PageData = std::vector<T>;
         using Page = std::tuple<size_t, PageData>;
         using PageMapType = std::map<size_t, Page>;
         PageMapType pages;
-        typename PageMapType::iterator test;
         PersistanceService<T>& persistanceService;
         std::string query;
         iterator endIterator;
@@ -81,6 +80,22 @@ class ResultSet
                     return *this;
                 }
         };
+
+        reference getDataFromPage(int pageNum, int posInPage)
+        {
+            typename PageMapType::iterator pageMapIter = pages.find(pageNum);
+            if(pageMapIter != pages.end())
+            {
+                Page& page = pageMapIter->second;
+                size_type sizeOfPage = std::get<0>(page);
+                PageData& pageData =  std::get<1>(page);
+                if(posInPage < sizeOfPage)
+                {
+                    return pageData[posInPage];
+                }
+            }
+            throw std::out_of_range("Position not in result set");
+        }
 
     public:
         class ResultSetIterator
@@ -134,18 +149,7 @@ class ResultSet
                 {
                     int pageNumber = position->getPage();
                     size_type posInPage = position->getPosInPage();
-                    typename PageMapType::iterator pageMapIter = pResultSet->pages.find(pageNumber);
-                    if(pageMapIter != pResultSet->pages.end())
-                    {
-                        Page& page = pageMapIter->second;
-                        size_type sizeOfPage = std::get<0>(page);
-                        PageData& pageData =  std::get<1>(page);
-                        if(posInPage < sizeOfPage)
-                        {
-                            return pageData[posInPage];
-                        }
-                    }
-                    throw std::out_of_range("Position not in result set");
+                    return pResultSet->getDataFromPage(pageNumber, posInPage);
                 }
 
                 // Next value with pre increment (++iter)
@@ -204,7 +208,7 @@ class ResultSet
                     auto queryResult = persistanceService.executeQuery(query, pageNumber * PageSize, PageSize);
                     if(queryResult.size() > 0)
                     {
-                        std::array<T, PageSize> newPageData;            
+                        std::vector<T> newPageData(queryResult.size());
                         std::transform(queryResult.begin(), queryResult.end(), newPageData.begin(), [](T row){ return row; });
                         pages.insert(std::pair<size_t, Page>(pageNumber, Page(queryResult.size(), newPageData)));
                         endIterator.position->set(pageNumber, queryResult.size() - 1)++;
@@ -242,5 +246,11 @@ class ResultSet
         const iterator& end()
         {
             return endIterator;
+        }
+
+        // get first element
+        reference front()
+        {
+            return getDataFromPage(0, 0);
         }
 };

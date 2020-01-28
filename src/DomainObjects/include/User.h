@@ -5,6 +5,8 @@
 #include "Date.h"
 #include "BaseDO.h"
 
+class UserRepo;
+
 class User : public BaseDO
 {
     private:
@@ -14,7 +16,11 @@ class User : public BaseDO
         Address _homeAddress;
         Date _birthday;
 
+        User(long long id, const std::string& firstName, const std::string& middleName, const std::string& surName, const Date& birthday, const Address& homeAddress);
+
     public:
+        User();
+        
         const std::string& firstName() const;
         const std::string& middleName() const;
         const std::string& surName() const;
@@ -26,4 +32,6 @@ class User : public BaseDO
         void surName(const std::string& surName);
         void homeAddress(const Address& homeAddress);
         void birthday(const Date& birthday);
+
+        friend UserRepo;
 };

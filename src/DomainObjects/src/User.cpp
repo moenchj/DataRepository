@@ -1,6 +1,16 @@
 #include "User.h"
+#include "Date.h"
+#include "Address.h"
 
 using namespace std;
+
+User::User()
+: User(-1ll, "", "", "", Date{}, Address{})
+{}
+
+User::User(long long id, const std::string& firstName, const std::string& middleName, const std::string& surName, const Date& birthday, const Address& homeAddress)
+: BaseDO(id), _firstName(firstName), _middleName(middleName), _surName(surName), _birthday(birthday), _homeAddress(homeAddress)
+{}
 
 const string& User::firstName() const
 {

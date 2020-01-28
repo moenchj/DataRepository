@@ -12,9 +12,12 @@ message(STATUS "Installation to: ${CMAKE_INSTALL_PREFIX}")
 
 project(${TARGET_NAME})
 
+# include the Project directory for search of find modules
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
+
 # Define target content
 add_library(${TARGET_NAME} SHARED
-	src/DemoDAL.cpp
+	src/SQLiteDAL.cpp
 )
 
 # Define headers for this library. 
@@ -24,6 +27,9 @@ target_include_directories(${TARGET_NAME}
 	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # Define dependent libraries
+find_package (SQLite3 REQUIRED)
+target_include_directories(${TARGET_NAME} PRIVATE ${SQLITE3_INCLUDE_DIRS})
+target_link_libraries (${TARGET_NAME} ${SQLITE3_LIBRARY})
 #target_link_libraries(${TARGET_NAME} DomainObjectHandling)
 
 # define target properties

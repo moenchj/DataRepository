@@ -4,7 +4,9 @@ class BaseDO
 {
     protected:
         long long _id;
+        BaseDO(long long id);
+        void id(long long id);
 
     public:
-        virtual long long id();
+        long long id() const;
 };
