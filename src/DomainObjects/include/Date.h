@@ -15,8 +15,7 @@ class Date
 
         Date();
         Date(int day, int month, int year);
-
-    public:
+    public:       
         unsigned int day() const;
         unsigned int month() const;
         unsigned int year() const;

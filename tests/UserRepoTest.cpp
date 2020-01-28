@@ -17,7 +17,7 @@ class UserRepoTest : public ::testing::Test {
     }
 };
 
-TEST_F(UserRepoTest, BasicFunction)
+TEST_F(UserRepoTest, SaveAndGet)
 {
     UserRepo users = DataRepository::instance().Users();
     User newUser = users.createUser();
@@ -41,6 +41,39 @@ TEST_F(UserRepoTest, BasicFunction)
         users.save(newUser);
         ResultSet<User> result = users.getUsersBySurName("Stein");
         ASSERT_EQ(result.front().surName(), "Stein");
+        ASSERT_EQ(result.front().birthday().year(), 1998);
+        ASSERT_EQ(result.front().birthday().month(), 3);
+        ASSERT_EQ(result.front().birthday().day(), 2);
+    }
+    catch(const exception& e)
+    {
+        cout << "Exception during test! " << e.what() << endl;
+    }
+    catch(...)
+    {
+        cout << "Exception during test!" << endl;
+    }
+}
+
+TEST_F(UserRepoTest, UpdateFunction)
+{
+    UserRepo users = DataRepository::instance().Users();
+    ResultSet<User> result = users.getUsersBySurName("Stein");
+    for(auto user: result)
+    {
+        user.surName("Granit");
+        users.save(user);
+    }
+
+    try
+    {
+        result = users.getUsersBySurName("Stein");
+        ASSERT_EQ(result.size(), 0);
+        result = users.getUsersBySurName("Granit");
+        ASSERT_EQ(result.front().surName(), "Granit");
+        ASSERT_EQ(result.front().birthday().year(), 1998);
+        ASSERT_EQ(result.front().birthday().month(), 3);
+        ASSERT_EQ(result.front().birthday().day(), 2);
     }
     catch(const exception& e)
     {

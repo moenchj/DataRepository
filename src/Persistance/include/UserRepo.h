@@ -16,7 +16,7 @@ class UserRepo : public PersistanceService<User>
     protected:
         DAL& dal;
         UserRepo(DAL& dal) : dal(dal) {}
-        std::list<User> executeQuery(const std::string& query, unsigned int startAt, unsigned int numEntries);
+        std::list<User> select(const std::string& query, unsigned int startAt, unsigned int numEntries);
         User createUserFromDBRow(const DBRow& dbRow);
         Date createDateFromDateField(const std::string& dateFieldValue);
         Address createAddressFromDBRow(const DBRow& dbRow);

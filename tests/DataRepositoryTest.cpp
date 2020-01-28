@@ -24,7 +24,9 @@ class DataRepositoryTest : public ::testing::Test {
 class DALMock : public DAL
 {
     public:
-        MOCK_METHOD((list<DBRow>), executeQuery, (const string& query, unsigned int, unsigned int));
+        MOCK_METHOD((list<DBRow>), selectQuery, (const string&, unsigned int, unsigned int));
+        MOCK_METHOD((variant<monostate, long long>), insertQuery, (const string&, (const vector<DBInsertValue>&)));
+        MOCK_METHOD(void, updateQuery, (const string&, (const map<string, DBValue>&), const string&));
 };
 
 TEST_F(DataRepositoryTest, BasicFunction)
@@ -43,8 +45,8 @@ TEST_F(DataRepositoryTest, BasicFunction)
     addressTableRow.values[2] = "10";
     addressTableRow.values[3] = "WC2N 5DU";
     addressTableRow.values[4] = "London";
-    EXPECT_CALL(dalMock, executeQuery("select * from users where id=1", 0, 100)).Times(1).WillOnce(Return(list<DBRow>{ userTableRow }));
-    EXPECT_CALL(dalMock, executeQuery("select * from addresses where id=1", 0, 1)).Times(1).WillOnce(Return(list<DBRow>{ addressTableRow }));
+    EXPECT_CALL(dalMock, selectQuery("select * from users where id=1", 0, 100)).Times(1).WillOnce(Return(list<DBRow>{ userTableRow }));
+    EXPECT_CALL(dalMock, selectQuery("select * from addresses where id=1", 0, 1)).Times(1).WillOnce(Return(list<DBRow>{ addressTableRow }));
     DataRepository dataRepo = DataRepository::instance(dalMock);
     ResultSet<User> result = dataRepo.Users().getUserById(1);
     User user = result.front();

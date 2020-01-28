@@ -14,21 +14,21 @@ class PersistanceServiceMock : public PersistanceService<string>
 {
     public:
         MOCK_METHOD(long long, save, (string&));
-        MOCK_METHOD((list<string>), executeQuery, (const string& query, unsigned int, unsigned int));
+        MOCK_METHOD((list<string>), select, (const string&, unsigned int, unsigned int));
 };
 
 TEST(ResultSetTest, BasicFunction)
 {
     PersistanceServiceMock psMock;
-    EXPECT_CALL(psMock, executeQuery("BasicFunction query", 0, 100)).Times(1).WillOnce(Return(list<string>{}));
-    ResultSet<string> resultSet { "BasicFunction query", psMock };
+    EXPECT_CALL(psMock, select("BasicFunction query", 0, 100)).Times(1).WillOnce(Return(list<string>{}));
+    ResultSet<string> resultSet { "BasicFunction query", &psMock };
 }
 
 TEST(ResultSetTest, OneResult)
 {
     PersistanceServiceMock psMock;
-    EXPECT_CALL(psMock, executeQuery("OneResult query", 0, 100)).Times(1).WillOnce(Return(list<string>{"The first string"}));
-    ResultSet<string> resultSet { "OneResult query", psMock };
+    EXPECT_CALL(psMock, select("OneResult query", 0, 100)).Times(1).WillOnce(Return(list<string>{"The first string"}));
+    ResultSet<string> resultSet { "OneResult query", &psMock };
     int numResults = 0;
     for(auto value: resultSet)
     {
@@ -41,8 +41,8 @@ TEST(ResultSetTest, OneResult)
 TEST(ResultSetTest, TwoResults)
 {
     PersistanceServiceMock psMock;
-    EXPECT_CALL(psMock, executeQuery("TwoResults query", 0, 100)).Times(1).WillOnce(Return(list<string>{"The first string", "The second string"}));
-    ResultSet<string> resultSet { "TwoResults query", psMock };
+    EXPECT_CALL(psMock, select("TwoResults query", 0, 100)).Times(1).WillOnce(Return(list<string>{"The first string", "The second string"}));
+    ResultSet<string> resultSet { "TwoResults query", &psMock };
     int numResults = 0;
     for(string value: resultSet)
     {
@@ -55,11 +55,11 @@ TEST(ResultSetTest, TwoPages)
 {
     const unsigned int pageSize = 2;
     PersistanceServiceMock psMock;
-    EXPECT_CALL(psMock, executeQuery("TwoResults query", 0, pageSize)).Times(1).
+    EXPECT_CALL(psMock, select("TwoResults query", 0, pageSize)).Times(1).
         WillOnce(Return(list<string>{"The first string", "The second string"}));
-    EXPECT_CALL(psMock, executeQuery("TwoResults query", 2, pageSize)).Times(1).
+    EXPECT_CALL(psMock, select("TwoResults query", 2, pageSize)).Times(1).
         WillOnce(Return(list<string>{"The third string"}));
-    ResultSet<string, pageSize> resultSet { "TwoResults query", psMock };
+    ResultSet<string, pageSize> resultSet { "TwoResults query", &psMock };
     int numResults = 0;
     for(string value: resultSet)
     {
@@ -72,13 +72,13 @@ TEST(ResultSetTest, TwoFullPages)
 {
     const unsigned int pageSize = 2;
     PersistanceServiceMock psMock;
-    EXPECT_CALL(psMock, executeQuery("TwoFullPages query", 0, pageSize)).Times(1).
+    EXPECT_CALL(psMock, select("TwoFullPages query", 0, pageSize)).Times(1).
         WillOnce(Return(list<string>{"The first string", "The second string"}));
-    EXPECT_CALL(psMock, executeQuery("TwoFullPages query", 2, pageSize)).Times(1).
+    EXPECT_CALL(psMock, select("TwoFullPages query", 2, pageSize)).Times(1).
         WillOnce(Return(list<string>{"The third string", "The fourth string"}));
-    EXPECT_CALL(psMock, executeQuery("TwoFullPages query", 4, pageSize)).Times(1).
+    EXPECT_CALL(psMock, select("TwoFullPages query", 4, pageSize)).Times(1).
         WillOnce(Return(list<string>{}));
-    ResultSet<string, pageSize> resultSet { "TwoFullPages query", psMock };
+    ResultSet<string, pageSize> resultSet { "TwoFullPages query", &psMock };
     int numResults = 0;
     for(ResultSet<string, pageSize>::iterator iter = resultSet.begin();
         iter != resultSet.end();

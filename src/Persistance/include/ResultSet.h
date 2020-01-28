@@ -29,7 +29,7 @@ class ResultSet
         using Page = std::tuple<size_t, PageData>;
         using PageMapType = std::map<size_t, Page>;
         PageMapType pages;
-        PersistanceService<T>& persistanceService;
+        PersistanceService<T>* pPersistanceService;
         std::string query;
         iterator endIterator;
         bool lastFetchFailed = false;
@@ -177,7 +177,7 @@ class ResultSet
                 // Make iterator point to the same position than the given iterator
                 iterator& operator=(const typename ResultSet::iterator& other)
                 {
-                    *position = *(other->position);
+                    *position = *(other.position);
                     return *this;
                 }
 
@@ -205,7 +205,7 @@ class ResultSet
                 size_type start = pageNumber * PageSize;
                 size_type end = start + PageSize;
                 try{
-                    auto queryResult = persistanceService.executeQuery(query, pageNumber * PageSize, PageSize);
+                    auto queryResult = pPersistanceService->select(query, pageNumber * PageSize, PageSize);
                     if(queryResult.size() > 0)
                     {
                         std::vector<T> newPageData(queryResult.size());
@@ -228,9 +228,9 @@ class ResultSet
 
     public:            
         // Constructor
-        ResultSet(const std::string& query, PersistanceService<T>& persistanceService) :
+        ResultSet(const std::string& query, PersistanceService<T>* pPersistanceService) :
             query(query),
-            persistanceService(persistanceService), 
+            pPersistanceService(pPersistanceService), 
             endIterator(this, PagePosition {0, 0})
         {
             this->fetchPage(0);
@@ -252,5 +252,16 @@ class ResultSet
         reference front()
         {
             return getDataFromPage(0, 0);
+        }
+
+        // get the currently nunber of loaded elements
+        size_type size()
+        {
+            size_type size = 0;
+            for(auto page: pages)
+            {
+                size += std::get<0>(page);
+            }
+            return size;
         }
 };
