@@ -6,16 +6,17 @@
 #include <string>
 #include <variant>
 
+#include "DBValue.h"
 #include "DBRow.h"
+#include "DBQuery.h"
 
-struct DBAutoValue {};
-using DBValue = std::variant<std::monostate, std::string, long long>;
-using DBInsertValue = std::variant<DBAutoValue, DBValue>;
-
-class DAL
+namespace DAL
 {
-    public:
-        virtual std::list<DBRow> selectQuery(const std::string& query, unsigned int startAt = 0, unsigned int numEntries = 100) = 0;
-        virtual std::variant<std::monostate, long long> insertQuery(const std::string& table, const std::vector<DBInsertValue>& values) = 0;
-        virtual void updateQuery(const std::string& table, const std::map<std::string, DBValue>& valueMap, const std::string& whereClause) = 0;
+    class DAL
+    {
+        public:
+            virtual std::list<DBRow> selectQuery(const DBQuery& query, const std::size_t startAt) = 0;
+            virtual std::variant<std::monostate, DBId> insertQuery(const DBTableName& table, const std::vector<DBInsertValue>& values) = 0;
+            virtual void updateQuery(const DBTableName& table, const std::map<DBFieldName, DBValue>& valueMap, const std::string& whereClause) = 0;
+    };
 };

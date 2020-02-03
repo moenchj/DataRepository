@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace testing;
+using namespace DO;
 
 class UserRepoTest : public ::testing::Test {
 
@@ -31,9 +32,7 @@ TEST_F(UserRepoTest, SaveAndGet)
     homeAddress.city("New York");
     newUser.homeAddress(homeAddress);
     Date birthDay = newUser.birthday();
-    birthDay.day(2);
-    birthDay.month(3);
-    birthDay.year(1998);
+    birthDay.set(2, 3, 1998);
     newUser.birthday(birthDay);
 
     try

@@ -3,27 +3,29 @@
 #include <string>
 #include "BaseDO.h"
 
-class UserRepo;
-class User;
-
-class Date
+namespace DO
 {
-    private:
-        unsigned int _day;
-        unsigned int _month;
-        unsigned int _year;
+    class UserRepo;
+    class User;
 
-        Date();
-        Date(int day, int month, int year);
-    public:       
-        unsigned int day() const;
-        unsigned int month() const;
-        unsigned int year() const;
+    class Date
+    {
+        private:
+            int _day;
+            int _month;
+            int _year;
 
-        void day(const unsigned int day);
-        void month(const unsigned int month);
-        void year(const unsigned int year);
+            Date(int day, int month, int year);
+            bool isLeapYear(int year) const;
+            unsigned int daysInMonth(const int month, const int year) const;
+        public:       
+            int day() const;
+            int month() const;
+            int year() const;
 
-        friend UserRepo;
-        friend User;
+            void set(const int day, const int month, const int year);
+
+            friend UserRepo;
+            friend User;
+    };
 };

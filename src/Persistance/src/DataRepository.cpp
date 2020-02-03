@@ -2,40 +2,47 @@
 #include "SQLiteDAL.h"
 
 using namespace std;
-
-unique_ptr<DataRepository> DataRepository::_instance;
-unique_ptr<DAL> DataRepository::_dal;
-
-DataRepository DataRepository::instance()
+namespace DO
 {
-    if(!_instance)
+    unique_ptr<DataRepository> DataRepository::_instance;
+    unique_ptr<DAL::DAL> DataRepository::_dal;
+
+    DataRepository DataRepository::instance()
     {
-        _dal = make_unique<SQLiteDAL>("Database.sqlite");
-        _instance = make_unique<DataRepository>(DataRepository(*_dal));
+        if(!_instance)
+        {
+            _dal = make_unique<DAL::SQLiteDAL>("Database.sqlite");
+            _instance = make_unique<DataRepository>(DataRepository(*_dal));
+        }
+        return *_instance;
     }
-    return *_instance;
-}
 
-DataRepository DataRepository::instance(DAL& dal)
-{
-    if(!_instance)
+    DataRepository DataRepository::instance(DAL::DAL& dal)
     {
-        _instance = make_unique<DataRepository>(DataRepository(dal));
+        if(!_instance)
+        {
+            _instance = make_unique<DataRepository>(DataRepository(dal));
+        }
+        return *_instance;
     }
-    return *_instance;
-}
 
-void DataRepository::dispose()
-{
-    _dal.release();
-    _instance.release();
-}
+    void DataRepository::dispose()
+    {
+        _dal.release();
+        _instance.release();
+    }
 
-DataRepository::DataRepository(DAL& dal) :
-    _users(dal)
-{}
+    DataRepository::DataRepository(DAL::DAL& dal)
+    : _users(dal), _addresses(dal)
+    {}
 
-UserRepo DataRepository::Users()
-{
-    return _users;
-}
+    UserRepo DataRepository::Users()
+    {
+        return _users;
+    }
+
+    AddressRepo DataRepository::Addresses()
+    {
+        return _addresses;
+    }
+};

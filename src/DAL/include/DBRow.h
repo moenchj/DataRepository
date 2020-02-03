@@ -3,13 +3,18 @@
 #include <vector>
 #include <string>
 
-class DBRow
-{
-    public:
-        std::vector<std::string> headings;
-        std::vector<std::string> values;
+#include "DBValue.h"
 
-        DBRow(int numColumns)
-        : headings(numColumns), values(numColumns)
-        {}
+namespace DAL
+{
+    class DBRow
+    {
+        public:
+            std::vector<std::string> headings;
+            std::vector<DBValue> values;
+
+            DBRow(int numColumns)
+            : headings(numColumns), values(numColumns)
+            {}
+    };
 };

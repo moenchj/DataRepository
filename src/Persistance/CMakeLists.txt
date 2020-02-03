@@ -15,6 +15,7 @@ project(${TARGET_NAME})
 # Define target content
 add_library(${TARGET_NAME} SHARED
 	src/UserRepo.cpp
+	src/AddressRepo.cpp
 	src/DataRepository.cpp
 )
 

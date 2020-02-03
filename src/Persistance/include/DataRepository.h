@@ -3,20 +3,26 @@
 #include <memory>
 
 #include "UserRepo.h"
+#include "AddressRepo.h"
 #include "DAL.h"
 
-class DataRepository
+namespace DO
 {
-    private:
-        static std::unique_ptr<DAL> _dal;
-        static std::unique_ptr<DataRepository> _instance;
-        UserRepo _users;
-        DataRepository(DAL& dal);
+    class DataRepository
+    {
+        private:
+            static std::unique_ptr<DAL::DAL> _dal;
+            static std::unique_ptr<DataRepository> _instance;
+            UserRepo _users;
+            AddressRepo _addresses;
+            DataRepository(DAL::DAL& dal);
 
-    public:
-        static DataRepository instance();
-        static DataRepository instance(DAL& dal);
-        static void dispose();
-        
-        UserRepo Users();
+        public:
+            static DataRepository instance();
+            static DataRepository instance(DAL::DAL& dal);
+            static void dispose();
+            
+            UserRepo Users();
+            AddressRepo Addresses();
+    };
 };

@@ -2,50 +2,53 @@
 
 using namespace std;
 
-Address::Address()
-: Address(-1ll, "", "", "", "")
-{}
-
-Address::Address(long long id, std::string street, std::string number, std::string zipcode, std::string city)
-: BaseDO(id), _street(street), _number(number), _zipcode(zipcode), _city(city)
-{}
-
-const string& Address::street() const
+namespace DO
 {
-    return _street;
-}
+    Address::Address(PersistanceService<Address>* pPersistanceService, long long id, std::string street, std::string number, std::string zipcode, std::string city)
+    : BaseDO(pPersistanceService, id), _street(street), _number(number), _zipcode(zipcode), _city(city)
+    {}
 
-const string& Address::number() const
-{
-    return _number;
-}
+    const string& Address::street() const
+    {
+        return _street;
+    }
 
-const string& Address::zipcode() const
-{
-    return _zipcode;
-}
+    const string& Address::number() const
+    {
+        return _number;
+    }
 
-const string& Address::city() const
-{
-    return _city;
-}
+    const string& Address::zipcode() const
+    {
+        return _zipcode;
+    }
 
-void Address::street(const string& street)
-{
-    this->_street = street;
-}
+    const string& Address::city() const
+    {
+        return _city;
+    }
 
-void Address::number(const string& number)
-{
-    this->_number = number;
-}
+    void Address::street(const string& street)
+    {
+        this->_street = street;
+        setDirty();
+    }
 
-void Address::zipcode(const string& zipcode)
-{
-    this->_zipcode = zipcode;
-}
+    void Address::number(const string& number)
+    {
+        this->_number = number;
+        setDirty();
+    }
 
-void Address::city(const string& city)
-{
-    this->_city = city;
-}
+    void Address::zipcode(const string& zipcode)
+    {
+        this->_zipcode = zipcode;
+        setDirty();
+    }
+
+    void Address::city(const string& city)
+    {
+        this->_city = city;
+        setDirty();
+    }
+};

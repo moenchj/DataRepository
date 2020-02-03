@@ -8,27 +8,29 @@
 #include "PersistanceService.h"
 #include "DAL.h"
 #include "DBRow.h"
+#include "DBValue.h"
 
-class DataRepository;
-
-class UserRepo : public PersistanceService<User>
+namespace DO
 {
-    protected:
-        DAL& dal;
-        UserRepo(DAL& dal) : dal(dal) {}
-        std::list<User> select(const std::string& query, unsigned int startAt, unsigned int numEntries);
-        User createUserFromDBRow(const DBRow& dbRow);
-        Date createDateFromDateField(const std::string& dateFieldValue);
-        Address createAddressFromDBRow(const DBRow& dbRow);
-        std::string transformToSQLiteDateString(const Date& date);
-        long long save(Address& address);
+    class DataRepository;
 
-    public:
-        User createUser();
-        long long save(User& domainObject);
+    class UserRepo : public PersistanceService<User>
+    {
+        protected:
+            DAL::DAL& dal;
+            UserRepo(DAL::DAL& dal) : dal(dal) {}
+            std::list<User> select(const DAL::DBQuery& query, const size_t startAt);
+            User createUserFromDBRow(const DAL::DBRow& dbRow);
+            Date createDateFromDateField(const std::string& dateFieldValue);
+            std::string transformToSQLiteDateString(const Date& date);
 
-        ResultSet<User> getUserById(const unsigned int id);
-        ResultSet<User> getUsersBySurName(const std::string& surname);
+        public:
+            User createUser();
+            void save(User& domainObject);
 
-        friend DataRepository;
-};
+            ResultSet<User> getUserById(const DAL::DBId id);
+            ResultSet<User> getUsersBySurName(const std::string& surname);
+
+            friend DataRepository;
+    };
+}

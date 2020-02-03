@@ -14,7 +14,6 @@ project(${TARGET_NAME})
 
 # Define target content
 add_library(${TARGET_NAME} SHARED
-	src/BaseDO.cpp
 	src/Address.cpp
 	src/Date.cpp
 	src/User.cpp
@@ -27,7 +26,7 @@ target_include_directories(${TARGET_NAME}
 	PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # Define dependent libraries
-#target_link_libraries(${TARGET_NAME} DomainObjectHandling)
+#target_link_libraries(${TARGET_NAME} DomainObjects)
 
 # define target properties
 target_compile_features(${TARGET_NAME} PRIVATE cxx_std_17)

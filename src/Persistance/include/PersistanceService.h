@@ -3,10 +3,17 @@
 #include <string>
 #include <list>
 
-template<typename T>
-class PersistanceService
+#include "DBQuery.h"
+
+namespace DO
 {
-    public:
-        virtual std::list<T> select(const std::string& query, unsigned int startAt = 0, unsigned int numEntries = 100) = 0;
-        virtual long long save(T& domainObject) = 0;
+    template<typename T>
+    class PersistanceService
+    {
+        protected:
+            virtual void save(T& domainObject) = 0;
+
+        public:
+            virtual std::list<T> select(const DAL::DBQuery& query, const size_t startAt = 0) = 0;
+    };
 };
